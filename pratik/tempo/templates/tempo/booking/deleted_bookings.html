@@ -1,0 +1,63 @@
+{% include "navbar.html" %}
+
+<div class="container-fluid px-4 py-3">
+  <h4 class="mb-4">🗑️ Deleted Bookings</h4>
+
+  <div class="card p-4 mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div class="text-danger fw-semibold">Bookings in Recycle Bin</div>
+      <a href="/tempo/booking/booking_list/">
+        <button class="btn btn-outline-primary">
+          ⬅ Back to Active Bookings
+        </button>
+      </a>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped table-hover">
+        <thead class="table-dark">
+          <tr>
+            <th scope="col">Booking Details</th>
+            <th scope="col">Party Name</th>
+            <th scope="col">Vehicle No.</th>
+            <th scope="col">From, To</th>
+            <th scope="col">Total Hire</th>
+            <th scope="col">Pending Balance</th>
+            <th scope="col">Profit</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for i in deleted_list %}
+          <tr>
+            <td>
+              {{ i.booking_date|date:"d-m-Y" }}<br />{{ i.booking_number }}
+            </td>
+            <td>{{ i.party.party_name }}</td>
+            <td>{{ i.vehicle.vehicle_number }}</td>
+            <td>{{ i.from_city.city }}<br />{{ i.to_city.city }}</td>
+            <td>{{ i.total_hire|floatformat:2 }}</td>
+            <td>{{ i.balance|floatformat:2 }}</td>
+            <td>{{ i.profit|floatformat:2 }}</td>
+            <td>
+              <a
+                href="/recover_booking/{{ i.id }}/"
+                class="btn btn-sm btn-success"
+                >Recover</a
+              >
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="8" class="text-center text-muted">
+              No deleted bookings found.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{% include "footer.html" %}

@@ -1,0 +1,296 @@
+{% include "navbar.html" %}
+{% include "extra_css.html" %}
+<div class="contents">
+  <div class="container-fluid px-3 mt-5">
+    <h4 class="text-dark fw-bold mb-3">
+      <i class="fas fa-plus-circle me-2 text-primary"></i>Create New Booking
+    </h4>
+    <hr class="mb-4" />
+
+    <form method="post" action="/save_booking/" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <!-- Basic Information -->
+      <div class="card mb-3 border-0 shadow-sm rounded-4">
+        <div class="card-header text-white py-2 rounded-top-4" 
+             style="background: linear-gradient(135deg, #06beb6, #48b1bf, #8e44ad, #e056fd);">
+          <h6 class="mb-0 fw-bold"><i class="fas fa-file-alt me-2"></i>&nbsp;&nbsp;Basic Information</h6>
+        </div>
+        <div class="card-body p-3">
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label small fw-semibold">Booking Number</label>
+              <input type="text" name="booking_number" class="form-control form-control-sm px-2" value="{{ next_booking_no }}" readonly />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label small fw-semibold">Booking Date <span class="text-danger">*</span></label>
+              <input type="date" name="booking_date" class="form-control form-control-sm px-2" required />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label small fw-semibold">Our GST Number</label>
+              <input type="text" name="our_gst" class="form-control form-control-sm px-2" value="{{ customer_gst }}" placeholder="GST number" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-3">
+        <!-- Party Information -->
+        <div class="col-md-6">
+          <div class="card mb-3 border-0 shadow-sm rounded-4">
+            <div class="card-header text-white py-2 rounded-top-4"
+                 style="background: linear-gradient(135deg, #2193b0, #6dd5ed, #00c6ff, #0072ff);">
+              <h6 class="mb-0 fw-bold"><i class="fas fa-user me-2"></i>&nbsp;&nbsp;Party Information</h6>
+            </div>
+            <div class="card-body p-3">
+              <div class="mb-3">
+                <label class="form-label small fw-semibold">Party <span class="text-danger">*</span></label>
+                <select name="party_id" class="form-select form-select-sm" id="partySelect" required onchange="fillPartyDetails()">
+                  <option value="">Select Party</option>
+                  {% for party in parties %}
+                  <option value="{{ party.id }}" data-address="{{ party.address }}" data-contact="{{ party.contact_number }}" data-gst="{{ party.gst_no }}">
+                    {{ party.party_name }}
+                  </option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">Address</label>
+                  <input type="text" name="address" id="address" class="form-control form-control-sm px-2" readonly />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">GST Number</label>
+                  <input type="text" name="gst_no" id="gst_no" class="form-control form-control-sm px-2" readonly />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">Contact</label>
+                  <input type="text" name="contact_number" id="contact_number" class="form-control form-control-sm px-2" readonly />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Vehicle Information -->
+        <div class="col-md-6">
+          <div class="card mb-3 border-0 shadow-sm rounded-4">
+            <div class="card-header text-white py-2 rounded-top-4"
+                 style="background: linear-gradient(135deg, #ff512f, #dd2476, #ff416c, #ff4b2b);">
+              <h6 class="mb-0 fw-bold"><i class="fas fa-truck me-2"></i>&nbsp;&nbsp;Vehicle Information</h6>
+            </div>
+            <div class="card-body p-3">
+              <div class="mb-3">
+                <label class="form-label small fw-semibold">Vehicle <span class="text-danger">*</span></label>
+                <select name="vehicle_id" class="form-select form-select-sm" id="vehicleSelect" onchange="fillVehicleDetails()" required>
+                  <option value="">Select Vehicle</option>
+                  {% for vehicle in vehicles %}
+                  <option value="{{ vehicle.id }}" 
+                          data-owner="{{ vehicle.party_name }}" 
+                          data-contact="{{ vehicle.contact_number }}" 
+                          data-type="{{ vehicle.vehicle_type }}" 
+                          data-ownership="{{ vehicle.ownership }}">
+                    {{ vehicle.vehicle_number }} ({{ vehicle.vehicle_type }})
+                  </option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">Owner Name</label>
+                  <input type="text" name="owner_name" id="owner_name" class="form-control form-control-sm px-2" readonly />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">Vehicle Type</label>
+                  <input type="text" name="vehicle_type" id="vehicle_type" class="form-control form-control-sm px-2" readonly />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">Contact Number</label>
+                  <input type="text" name="owner_contact" id="owner_contact" class="form-control form-control-sm px-2" readonly />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">Ownership</label>
+                  <input type="text" name="ownership" id="ownership" class="form-control form-control-sm px-2" readonly />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Journey Information -->
+      <div class="card mb-3 border-0 shadow-sm rounded-4">
+        <div class="card-header text-white py-2 rounded-top-4"
+             style="background: linear-gradient(135deg, #654ea3, #eaafc8, #2b5876, #4e4376);">
+          <h6 class="mb-0 fw-bold"><i class="fas fa-road me-2"></i>&nbsp;&nbsp;Journey Information</h6>
+        </div>
+        <div class="card-body p-3">
+          <div class="row g-3 align-items-center">
+            <div class="col-md-5">
+              <label class="form-label small fw-semibold">From City <span class="text-danger">*</span></label>
+              <select name="from_city" class="form-select form-select-sm" required>
+                {% for city in cities %}
+                <option value="{{ city.id }}">{{ city.city }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-2 text-center text-primary">
+              <i class="fas fa-arrow-right fa-2x"></i>&nbsp;&nbsp;
+            </div>
+            <div class="col-md-5">
+              <label class="form-label small fw-semibold">To City <span class="text-danger">*</span></label>
+              <select name="to_city" class="form-select form-select-sm" required>
+                {% for city in cities %}
+                <option value="{{ city.id }}">{{ city.city }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-3">
+        <!-- Charges -->
+        <div class="col-md-6">
+          <div class="card mb-3 border-0 shadow-sm rounded-4">
+            <div class="card-header text-white py-2 rounded-top-4"
+                 style="background: linear-gradient(135deg, #f6d365, #fda085, #fbc2eb, #a6c1ee);">
+              <h6 class="mb-0 fw-bold"><i class="fas fa-wallet me-2"></i>&nbsp;&nbsp;Charges & Deductions</h6>
+            </div>
+            <div class="card-body p-3">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">Total Hire <span class="text-danger">*</span></label>
+                  <input type="number" name="total_hire" class="form-control form-control-sm px-2" required oninput="calculateFinalAmounts()" />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">Advance</label>
+                  <input type="number" name="advance" class="form-control form-control-sm px-2" oninput="calculateFinalAmounts()" />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">Hamali</label>
+                  <input type="number" name="hamali" class="form-control form-control-sm px-2" oninput="calculateFinalAmounts()" />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">TDS</label>
+                  <input type="number" name="tds" class="form-control form-control-sm px-2" oninput="calculateFinalAmounts()" />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">ST Charges</label>
+                  <input type="number" name="st_charges" class="form-control form-control-sm px-2" oninput="calculateFinalAmounts()" />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">Commission</label>
+                  <input type="number" name="commission" class="form-control form-control-sm px-2" oninput="calculateFinalAmounts()" />
+                </div>
+                <div class="col-12">
+                  <label class="form-label small fw-semibold">Other Charges</label>
+                  <input type="number" name="other_charges" class="form-control form-control-sm px-2" oninput="calculateFinalAmounts()" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Final Calculation -->
+        <div class="col-md-6">
+          <div class="card mb-3 border-0 shadow-sm rounded-4">
+            <div class="card-header text-white py-2 rounded-top-4"
+                 style="background: linear-gradient(135deg, #a8ff78, #78ffd6, #43cea2, #185a9d);">
+              <h6 class="mb-0 fw-bold"><i class="fas fa-chart-line me-2"></i>&nbsp;&nbsp;Final Calculation</h6>
+            </div>
+            <div class="card-body p-3">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">Balance</label>
+                  <input type="number" name="balance" id="balance" class="form-control form-control-sm px-2 bg-light" readonly />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">My Expenses</label>
+                  <input type="number" name="myExpense" id="myExpense" class="form-control form-control-sm px-2 bg-light" readonly />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">Profit</label>
+                  <input type="number" name="profit" id="profit" class="form-control form-control-sm px-2 bg-light" value="0" readonly />
+                </div>
+                <div class="col-12 mt-2">
+                  <label class="form-label small fw-semibold">Remark</label>
+                  <textarea name="remark" class="form-control form-control-sm px-2" rows="2" placeholder="Additional notes..."></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <div class="text-center mt-4">
+        <button type="submit" class="btn btn-primary btn-lg px-5 rounded-pill shadow-lg">
+          <i class="fas fa-save me-2"></i>&nbsp;&nbsp; Save Booking
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  function fillPartyDetails() {
+    const party = document.getElementById("partySelect");
+    const selectedOption = party.options[party.selectedIndex];
+    document.getElementById("address").value =
+      selectedOption.getAttribute("data-address") || "";
+    document.getElementById("contact_number").value =
+      selectedOption.getAttribute("data-contact") || "";
+    document.getElementById("gst_no").value =
+      selectedOption.getAttribute("data-gst") || "";
+  }
+
+  function fillVehicleDetails() {
+    const vehicleSelect = document.getElementById("vehicleSelect");
+    const selectedOption = vehicleSelect.options[vehicleSelect.selectedIndex];
+    document.getElementById("owner_name").value =
+      selectedOption.getAttribute("data-owner") || "";
+    document.getElementById("owner_contact").value =
+      selectedOption.getAttribute("data-contact") || "";
+    document.getElementById("vehicle_type").value =
+      selectedOption.getAttribute("data-type") || "";
+    document.getElementById("ownership").value =
+      selectedOption.getAttribute("data-ownership") || "";
+  }
+
+  function calculateFinalAmounts() {
+    const totalHire =
+      parseFloat(document.querySelector('input[name="total_hire"]').value) || 0;
+    const advance =
+      parseFloat(document.querySelector('input[name="advance"]').value) || 0;
+    const hamali =
+      parseFloat(document.querySelector('input[name="hamali"]').value) || 0;
+    const tds =
+      parseFloat(document.querySelector('input[name="tds"]').value) || 0;
+    const stCharges =
+      parseFloat(document.querySelector('input[name="st_charges"]').value) || 0;
+    const commission =
+      parseFloat(document.querySelector('input[name="commission"]').value) || 0;
+    const otherCharges =
+      parseFloat(document.querySelector('input[name="other_charges"]').value) ||
+      0;
+
+    const balance = totalHire - advance;
+    document.getElementById("balance").value = balance.toFixed(2);
+
+    const myExpense = hamali + tds + stCharges + commission + otherCharges;
+    document.getElementById("myExpense").value = myExpense.toFixed(2);
+
+    const profit =
+      advance - hamali - tds - stCharges - commission - otherCharges + balance;
+    document.getElementById("profit").value = profit.toFixed(2);
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    calculateFinalAmounts();
+    const today = new Date().toISOString().split("T")[0];
+    document.querySelector('input[name="booking_date"]').value = today;
+  });
+</script>
+
+{% include "footer.html" %}

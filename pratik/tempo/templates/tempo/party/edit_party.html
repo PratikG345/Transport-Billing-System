@@ -1,0 +1,50 @@
+{% include "navbar.html" %}
+{% include "extra_css.html" %}
+
+<div class="content">
+  <div class="container">
+    <div class="form-card">
+      <h3>Edit Party</h3>
+      <form method="post" action="/update_party/">
+        {% csrf_token %}
+        <input type="hidden" name="id" value="{{ old_data.id }}">
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Name</label>
+            <input type="text" name="party_name" class="form-control" value="{{ old_data.party_name }}" required />
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" value="{{ old_data.email }}" required />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Contact</label>
+            <input type="number" name="contact_number" class="form-control" value="{{ old_data.contact_number }}" pattern="\d{10}"
+              title="Please enter exactly 10 digits" required />
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Address</label>
+            <input type="text" name="address" class="form-control" value="{{ old_data.address }}" required />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">GST No</label>
+            <input type="text" name="gst_no" class="form-control" value="{{ old_data.gst_no }}" />
+          </div>
+        </div>
+
+        <div class="d-grid text-center">
+          <button type="submit" class="btn btn-gradient btn-md px-4">Update →</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% include "footer.html" %}

@@ -1,0 +1,25 @@
+{% include "navbar.html" %}
+{% include "extra_css.html" %}
+<div class="contents">
+  <div class="container">
+    <h2>Master</h2>
+    <form action="/update_master/" method="post">
+      {% csrf_token %}
+      <div class="row">
+        <div class="col-6">
+          <input type="hidden" name="id" value="{{old_data.id}}" />
+          <label>City:</label>
+          <input
+            type="text"
+            name="city"
+            class="form-control"
+            value="{{old_data.city}}"
+            required
+          /><br />
+          <button class="btn btn-primary">Submit</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% include "footer.html" %}

@@ -1,0 +1,356 @@
+{% include "navbar.html" %}
+
+<div class="container-fluid px-4 py-3">
+  <h4 class="text-white mb-4">📝 Update Booking</h4>
+
+  <form
+    method="post"
+    action="/update_booking/{{ booking.id }}/"
+    enctype="multipart/form-data"
+  >
+    {% csrf_token %}
+
+    <div class="card p-4 mb-4">
+      <div class="text-info fw-semibold mb-3">📘 Basic Information</div>
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label>Booking Number *</label>
+          <input
+            type="text"
+            name="booking_number"
+            class="form-control"
+            value="{{ booking.booking_number }}"
+            required
+          />
+        </div>
+        <div class="col-md-4">
+          <label>Booking Date *</label>
+          <input
+            type="date"
+            name="booking_date"
+            class="form-control"
+            value="{{ booking.booking_date }}"
+            required
+          />
+        </div>
+        <div class="col-md-4">
+          <label>Our GST Number</label>
+          <input
+            type="text"
+            name="our_gst"
+            value="{{ booking.our_gst }}"
+            class="form-control"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card p-4 mb-4">
+          <div class="text-success fw-semibold mb-3">👤 Party Information</div>
+          <label>Party *</label>
+
+          <label>Address</label>
+          <input
+            type="text"
+            name="address"
+            id="address"
+            class="form-control"
+            readonly
+          />
+
+          <label>Contact</label>
+          <input
+            type="text"
+            name="contact_number"
+            id="contact_number"
+            class="form-control"
+            readonly
+          />
+
+          <label>GST Number</label>
+          <input
+            type="text"
+            name="gst_no"
+            id="gst_no"
+            class="form-control"
+            readonly
+          />
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card p-4 mb-4">
+          <div class="text-warning fw-semibold mb-3">
+            🚚 Vehicle Information
+          </div>
+          <label>Vehicle *</label>
+          <select
+            name="vehicle_id"
+            class="form-control"
+            id="vehicleSelect"
+            onchange="fillVehicleDetails()"
+            required
+          >
+            <option value="">Select Vehicle</option>
+            {% for vehicle in vehicles %}
+            <option
+              value="{{ vehicle.id }}"
+              data-owner="{{ vehicle.party_name }}"
+              data-contact="{{ vehicle.contact_number }}"
+              data-type="{{ vehicle.vehicle_type }}"
+              data-address="{{ vehicle.address }}"
+              data-ownership="{{ vehicle.ownership }}"
+            >
+              {{ vehicle.vehicle_number }} ({{ vehicle.vehicle_type }})
+            </option>
+            {% endfor %}
+          </select>
+
+          <label>Owner Name</label>
+          <input
+            type="text"
+            name="owner_name"
+            id="owner_name"
+            class="form-control"
+            readonly
+          />
+
+          <label>Contact Number</label>
+          <input
+            type="text"
+            name="owner_contact"
+            id="owner_contact"
+            class="form-control"
+            readonly
+          />
+
+          <label>Vehicle Type</label>
+          <input
+            type="text"
+            name="vehicle_type"
+            id="vehicle_type"
+            class="form-control"
+            readonly
+          />
+
+          <label>Address</label>
+          <input
+            type="text"
+            name="owner_address"
+            id="owner_address"
+            class="form-control"
+            readonly
+          />
+
+          <label>Ownership</label>
+          <input
+            type="text"
+            name="ownership"
+            id="ownership"
+            class="form-control"
+            readonly
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="card p-4 mb-4">
+      <div class="text-purple fw-semibold mb-3">🛣️ Journey Information</div>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label>From City *</label>
+          <select name="from_city" class="form-select" required>
+            {% for city in cities %}
+            <option value="{{ city.id }}">{{ city.city }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label>To City *</label>
+          <select name="to_city" class="form-select" required>
+            {% for city in cities %}
+            <option value="{{ city.id }}">{{ city.city }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card p-4 mb-4">
+          <div class="text-warning fw-semibold mb-3">
+            💵 Charges & Deductions
+          </div>
+          <label>Total Hire *</label>
+          <input
+            type="number"
+            name="total_hire"
+            class="form-control"
+            required
+            oninput="calculateFinalAmounts()"
+          />
+          <label>Advance</label>
+          <input
+            type="number"
+            name="advance"
+            class="form-control"
+            value=""
+            oninput="calculateFinalAmounts()"
+          />
+          <label>Hamali</label>
+          <input
+            type="number"
+            name="hamali"
+            class="form-control"
+            value=""
+            oninput="calculateFinalAmounts()"
+          />
+          <label>TDS</label>
+          <input
+            type="number"
+            name="tds"
+            class="form-control"
+            value=""
+            oninput="calculateFinalAmounts()"
+          />
+          <label>ST Charges</label>
+          <input
+            type="number"
+            name="st_charges"
+            class="form-control"
+            value=""
+            oninput="calculateFinalAmounts()"
+          />
+          <label>Commission</label>
+          <input
+            type="number"
+            name="commission"
+            class="form-control"
+            value=""
+            oninput="calculateFinalAmounts()"
+          />
+          <label>Other Charges/Deductions</label>
+          <input
+            type="number"
+            name="other_charges"
+            class="form-control"
+            value=""
+            oninput="calculateFinalAmounts()"
+          />
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card p-4 mb-4">
+          <div class="text-success fw-semibold mb-3">📊 Final Calculation</div>
+          <label>Balance</label>
+          <input
+            type="number"
+            name="balance"
+            id="balance"
+            class="form-control"
+            readonly
+          />
+
+          <label>My Expenses</label>
+          <input
+            type="number"
+            name="myExpense"
+            id="myExpense"
+            class="form-control"
+            readonly
+          />
+
+          <label>Profit</label>
+          <input
+            type="number"
+            name="profit"
+            id="profit"
+            class="form-control"
+            value="0"
+            readonly
+          />
+
+          <label class="mt-2">Remark</label>
+          <textarea name="remark" class="form-control"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-end">
+      <button type="submit" class="btn btn-primary px-4">Save Booking</button>
+    </div>
+  </form>
+</div>
+
+<script>
+  function fillPartyDetails() {
+    const party = document.getElementById("partySelect");
+    const selectedOption = party.options[party.selectedIndex];
+    const address = selectedOption.getAttribute("data-address") || "";
+    const contact = selectedOption.getAttribute("data-contact") || "";
+    const gst = selectedOption.getAttribute("data-gst") || "";
+
+    document.getElementById("address").value = address;
+    document.getElementById("contact_number").value = contact;
+    document.getElementById("gst_no").value = gst;
+  }
+
+  function fillVehicleDetails() {
+    const vehicleSelect = document.getElementById("vehicleSelect");
+    const selectedOption = vehicleSelect.options[vehicleSelect.selectedIndex];
+    const ownerName = selectedOption.getAttribute("data-owner") || "";
+    const contact = selectedOption.getAttribute("data-contact") || "";
+    const vehicleType = selectedOption.getAttribute("data-type") || "";
+    const address = selectedOption.getAttribute("data-address") || "";
+    const ownership = selectedOption.getAttribute("data-ownership") || "";
+
+    document.getElementById("owner_name").value = ownerName;
+    document.getElementById("owner_contact").value = contact;
+    document.getElementById("vehicle_type").value = vehicleType;
+    document.getElementById("owner_address").value = address;
+    document.getElementById("ownership").value = ownership;
+  }
+
+  function calculateFinalAmounts() {
+    const totalHire =
+      parseFloat(document.querySelector('input[name="total_hire"]').value) || 0;
+    const advance =
+      parseFloat(document.querySelector('input[name="advance"]').value) || 0;
+    const hamali =
+      parseFloat(document.querySelector('input[name="hamali"]').value) || 0;
+    const tds =
+      parseFloat(document.querySelector('input[name="tds"]').value) || 0;
+    const stCharges =
+      parseFloat(document.querySelector('input[name="st_charges"]').value) || 0;
+    const commission =
+      parseFloat(document.querySelector('input[name="commission"]').value) || 0;
+    const otherCharges =
+      parseFloat(document.querySelector('input[name="other_charges"]').value) ||
+      0;
+
+    const balance = totalHire - advance;
+    document.getElementById("balance").value = balance.toFixed(2);
+
+    const myExpense = hamali + tds + stCharges + commission + otherCharges;
+    document.getElementById("myExpense").value = myExpense.toFixed(2);
+
+    const profit =
+      advance - hamali - tds - stCharges - commission - otherCharges + balance;
+    document.getElementById("profit").value = profit.toFixed(2);
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    calculateFinalAmounts();
+
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, "0"); // Months start at 0!
+    const dd = String(today.getDate()).padStart(2, "0");
+    document.querySelector('input[name="booking_date"]').value =
+      `${yyyy}-${mm}-${dd}`;
+  });
+</script>
+{% include "footer.html" %}

@@ -1,0 +1,63 @@
+{% include "navbar.html" %}
+{% include "extra_css.html" %}
+
+<div class="content">
+  <div class="container">
+    <div class="form-card pt-4">
+      <h4 class="mb-3 text-center">Edit Vehicle</h4>
+      <form action="/update_vehicle/" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="id" value="{{old_data.id}}">
+
+        <div class="row mb-5">
+          <div class="col-md-6">
+            <label class="form-label">Vehicle Number</label>
+            <input type="text" name="vehicle_number" class="form-control form-control-sm"
+              value="{{old_data.vehicle_number}}" required />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Owner Name</label>
+            <input type="text" name="party_name" class="form-control form-control-sm"
+              value="{{old_data.party_name}}" required />
+          </div>
+        </div>
+
+        <div class="row mb-5">
+          <div class="col-md-6">
+            <label class="form-label">Contact No.</label>
+            <input type="number" name="contact_number" class="form-control form-control-sm"
+              value="{{old_data.contact_number}}" pattern="\d{10}"
+              title="Please enter exactly 10 digits" required />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Address</label>
+            <input type="text" name="address" class="form-control form-control-sm"
+              value="{{old_data.address}}" required />
+          </div>
+        </div>
+
+        <div class="row mb-5">
+          <div class="col-md-6">
+            <label class="form-label">Vehicle Type</label>
+            <input type="text" name="vehicle_type" placeholder="Car, Bike, Truck..." class="form-control form-control-sm"
+              value="{{old_data.vehicle_type}}" />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Ownership</label>
+            <select name="ownership" class="form-control form-control-sm" required>
+              <option value="">-- Select Type --</option>
+              <option value="Owner" {% if old_data.ownership == "Owner" %}selected{% endif %}>Owner</option>
+              <option value="Vendor" {% if old_data.ownership == "Vendor" %}selected{% endif %}>Vendor</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="d-grid mt-3 text-center">
+          <button type="submit" class="btn btn-gradient btn-md px-4">Update →</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% include "footer.html" %}

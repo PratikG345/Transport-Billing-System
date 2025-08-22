@@ -1,0 +1,18 @@
+{% include "navbar.html" %}
+{% include "extra_css.html" %}
+<div class="contents">
+    <div class="container mt-5">
+        <h2>Master</h2>
+        <form action="/save_master/" method="post">
+            {% csrf_token %}
+        <div class="row">
+            <div class="col-6">
+                <label>City:</label>
+                <input type="text" name="city" class="form-control" required><br>
+                <button class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+        </form>
+    </div>
+</div>
+{% include "footer.html" %}

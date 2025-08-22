@@ -1,0 +1,64 @@
+{% include "navbar.html" %} {% include "extra_css.html" %}
+<div class="contents">
+  <div class="container py-5">
+    <h4 class="mb-4">📋 View Booking Details</h4>
+
+    <div class="card p-3 mb-4" style="width: 1150px;">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="text-info fw-semibold">All Bookings</div>
+        <a href="/tempo/booking/deleted_bookings/">
+          <button class="btn btn-outline-info">🗑️ View Deleted Bookings</button>
+        </a>
+      </div>
+      <br />
+      <div class="table-responsive">
+        <table class="table table-sm table-bordered align-middle text-center">
+          <thead class="table-primary">
+            <tr>
+              <th>Booking No.</th>
+              <th>Date</th>
+              <th>Party</th>
+              <th>Vehicle</th>
+              <th>From → To</th>
+              <th>Total Hire</th>
+              <th>Balance</th>
+              <th>Profit</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for i in bookings reversed %}
+            <tr>
+              <td>{{ i.booking_number }}</td>
+              <td>{{ i.booking_date|date:"d-m-Y" }}</td>
+              <td>{{ i.party.party_name }}</td>
+              <td>{{ i.vehicle.vehicle_number }}</td>
+              <td>{{ i.from_city.city }} → {{ i.to_city.city }}</td>
+              <td>{{ i.total_hire|floatformat:2 }}</td>
+              <td>{{ i.balance|floatformat:2 }}</td>
+              <td>{{ i.profit|floatformat:2 }}</td>
+              <td>
+                <a href="/update_booking/{{ i.id }}/" 
+                  class="btn btn-sm btn-warning me-1"
+                  onclick="return confirm('Are you sure to update?')">Update</a>
+                <a href="/delete_booking/{{ i.id }}/" 
+                  class="btn btn-sm btn-danger"
+                  onclick="return confirm('Are you sure to delete?')">Delete</a>
+              </td>
+            </tr>
+
+            {% empty %}
+            <tr>
+              <td colspan="9" class="text-center">No bookings found.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+
+    </div>
+  </div>
+</div>
+
+{% include "footer.html" %}
