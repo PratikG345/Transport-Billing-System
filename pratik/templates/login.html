@@ -1,0 +1,105 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Login</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .img {
+        width: 50vw;
+        height: 100vh;
+        overflow: hidden;
+      }
+      .img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 0.5rem 0 0 0.5rem;
+        display: block;
+      }
+      .login-card {
+        max-width: 800px;
+        width: 50vw;
+        height: 100vh;
+        overflow-y: auto;
+        padding: 2rem;
+      }
+      /* On smaller screens, stack vertically */
+      @media (max-width: 768px) {
+        .container-fluid {
+          flex-direction: column !important;
+        }
+        .img,
+        .login-card {
+          width: 100vw !important;
+          height: auto !important;
+          border-radius: 0.5rem 0.5rem 0 0 !important;
+        }
+        .img img {
+          border-radius: 0.5rem 0.5rem 0 0 !important;
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-light">
+    <div
+      class="container-fluid d-flex justify-content-end align-items-center min-vh-100 p-0"
+    >
+      <div class="img flex-shrink-0">
+        <img src="{% static 'assets/img/truck.jpg' %}" alt="Truck Image" />
+      </div>
+      <div class="card shadow login-card">
+        <h1 class="text-center mb-4">Login Here</h1>
+        <form action="/do_login/" method="post" novalidate>
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="customer_email" class="form-label fw-semibold"
+              >Enter Email</label
+            >
+            <input
+              type="email"
+              name="customer_email"
+              id="customer_email"
+              class="form-control"
+              required
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="customer_password" class="form-label fw-semibold"
+              >Enter Password</label
+            >
+            <input
+              type="password"
+              name="customer_password"
+              id="customer_password"
+              class="form-control"
+              required
+            />
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100 fw-bold">
+            Login Now
+          </button>
+
+          <div class="mt-4 text-center">
+            <h5>
+              <a href="/register_now/" class="text-decoration-none"
+                >Register Now</a
+              >
+            </h5>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

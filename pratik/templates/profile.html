@@ -1,0 +1,56 @@
+{% include "navbar.html" %}
+{% include "extra_css.html" %}
+<div class="contents">
+  <div class="container rounded bg-white mt-5 mb-5">
+    <div class="row">
+      <div class="col-md-3 border-right text-center">
+        <img
+          class="rounded-circle mt-5"
+          width="150"
+          src="{{ customer.customer_photo.url }}"
+          alt="Profile Picture"
+        />
+        <h4 class="font-weight-bold mt-3">{{ customer.customer_name }}</h4>
+        <p class="text-black-50">{{ customer.customer_email }}</p>
+      </div>
+
+      <div class="col-md-9 border-right">
+        <div class="p-3 py-5">
+          <h4 class="mb-4">Profile Details</h4>
+
+          <div class="row mb-3">
+            <div class="col-md-4 font-weight-bold">Name:</div>
+            <div class="col-md-8">{{ customer.customer_name }}</div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-4 font-weight-bold">Email:</div>
+            <div class="col-md-8">{{ customer.customer_email }}</div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-4 font-weight-bold">Mobile:</div>
+            <div class="col-md-8">{{ customer.customer_mobile }}</div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-4 font-weight-bold">GST Number:</div>
+            <div class="col-md-8">{{ customer.customer_gst }}</div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-4 font-weight-bold">Bookings Done:</div>
+            <div class="col-md-8">{{ total_bookings }}</div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-4 font-weight-bold">Total Profit:</div>
+            <div class="col-md-8">{{ total_profit }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% include "footer.html" %}

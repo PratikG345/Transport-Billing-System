@@ -1,0 +1,69 @@
+{% load humanize %} {% include "navbar.html" %} {% include "extra_css.html" %}
+<div class="contents bg-light">
+  <div class="container-fluid mt-5">
+    <div class="row mb-5">
+      <div class="col-12">
+        <h2 class="text-center">TransitIQ Dashboard</h2>
+      </div>
+    </div>
+    <div class="row mb-4">
+      <div class="col-4">
+        <div class="d-card1 text-white">
+          <div class="card-body">
+            <h5 class="card-title">Total Parties</h5>
+            <p class="card-text display-6">{{ total_parties }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-4">
+        <div class="d-card2 text-white mb-3">
+          <div class="card-body">
+            <h5 class="card-title">💰 Total Amount</h5>
+            <p class="card-text fs-4">₹{{ total_amount| intcomma }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-4">
+        <div class="d-card3 text-white mb-3">
+          <div class="card-body">
+            <h5 class="card-title">💰 Total Profit</h5>
+            <p class="card-text fs-4">₹{{ total_profit| intcomma }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-4">
+        <div class="d-card4 text-white mb-3">
+          <div class="card-body">
+            <h5 class="card-title">💰 Total Pending</h5>
+            <p class="card-text fs-4">₹{{ total_pending| intcomma }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-4">
+        <div class="d-card5 text-white">
+          <div class="card-body">
+            <h5 class="card-title">Total Vehicles</h5>
+            <p class="card-text display-6">{{ total_vehicles }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-4">
+        <a href="/tempo/booking/booking_list/" class="text-decorations-none">
+          <div class="d-card6 text-white">
+            <div class="card-body">
+              <h5 class="card-title">Total Bookings</h5>
+              <p class="card-text display-6">{{ total_bookings }}</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% include "footer.html" %}

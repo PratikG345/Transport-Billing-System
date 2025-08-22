@@ -1,0 +1,159 @@
+<!-- Floating Chat Icon -->
+<div id="chat-icon" onclick="toggleChat()">
+    💬
+</div>
+
+<!-- Chat Popup -->
+<div id="chat-popup">
+    <div id="chat-header">
+        Chat with Simba
+        <span id="close-btn" onclick="toggleChat()">×</span>
+    </div>
+    <div id="chat-messages"></div>
+    <div id="chat-input-area">
+        <input type="text" id="chat-input" placeholder="Type a message..." onkeypress="if(event.key === 'Enter') sendMessage()">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+</div>
+
+<style>
+    /* Floating Icon */
+    #chat-icon {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: #007bff;
+        color: white;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 24px;
+        z-index: 1000;
+    }
+
+    /* Popup Chat Box */
+    #chat-popup {
+        display: none;
+        position: fixed;
+        bottom: 80px;
+        right: 20px;
+        width: 300px;
+        height: 400px;
+        background: white;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        z-index: 1000;
+    }
+
+    #chat-header {
+        background: #007bff;
+        color: white;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    #chat-messages {
+        flex: 1;
+        padding: 10px;
+        overflow-y: auto;
+        font-size: 14px;
+    }
+
+    #chat-input-area {
+        display: flex;
+        border-top: 1px solid #ccc;
+    }
+
+    #chat-input {
+        flex: 1;
+        border: none;
+        padding: 10px;
+        outline: none;
+    }
+
+    button {
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 10px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background: #0056b3;
+    }
+
+    #close-btn {
+        cursor: pointer;
+        font-weight: bold;
+    }
+</style>
+
+<script>
+    function toggleChat() {
+        let popup = document.getElementById("chat-popup");
+        popup.style.display = (popup.style.display === "none" || popup.style.display === "") ? "flex" : "none";
+    }
+
+    function sendMessage() {
+        let input = document.getElementById("chat-input");
+        let message = input.value.trim();
+        if (message === "") return;
+
+        let chatBox = document.getElementById("chat-messages");
+
+        // Add user message
+        chatBox.innerHTML += `<div><strong>You:</strong> ${message}</div>`;
+        input.value = "";
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        // Send message to Django API
+        fetch("/chat_api/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCookie("csrftoken")
+            },
+            body: JSON.stringify({ prompt: message })
+        })
+        .then(res => {
+            if (!res.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return res.json();
+        })
+        .then(data => {
+            chatBox.innerHTML += `<div><strong>Simba:</strong> ${data.response || "No response"}</div>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        })
+        .catch(error => {
+            chatBox.innerHTML += `<div style="color:red;"><strong>Error:</strong> ${error.message}</div>`;
+        });
+    }
+
+    // Get CSRF token from cookies
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+            const cookies = document.cookie.split(";").map(c => c.trim());
+            for (let cookie of cookies) {
+                if (cookie.startsWith(name + "=")) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+

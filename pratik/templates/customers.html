@@ -1,0 +1,26 @@
+<h1>Customers List</h1>
+<table width="100%" border="1">
+    <tr>
+        <th>Actions</th>
+        <th>SN</th>
+        <th>Name</th>
+        <th>Mobile</th>
+        <th>Email</th>
+        <th>Image</th>
+        <th>Password</th>
+    </tr>
+    {% for i in customers %}
+    <tr>
+        <td>
+            <a href="/edit_customers/?id={{i.id}}">Edit</a>
+        </td>
+        <td>{{forloop.counter}}</td>
+        <td>{{i.customer_name}}</td>
+        <td>{{i.customer_mobile}}</td>
+        <td>{{i.customer_email}}</td>
+        <td><img src="/static/{{ i.customer_photo.name|cut:'static/' }}" width="100px">
+</td>
+        <td>{{i.customer_password}}</td>
+    </tr>
+    {% endfor %}
+</table>
